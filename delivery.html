@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delivery Details — Al Basha Care</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand"><a href="index.html">Ayesha-care</a></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="orders.html">Orders (Admin)</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Loading animation overlay (appears briefly on page enter) -->
+<div id="loader" class="loader active"><div class="spinner"></div></div>
+
+<main class="container">
+  <div class="wrap">
+    <div class="gallery">
+      <img id="pimg" src="" alt="Product">
+    </div>
+    <div>
+      <h1 id="pname">Product</h1>
+      <p class="price">PKR <span id="pprice">0</span></p>
+      <p class="small">Fill your delivery details. Your order will be saved and viewable on the admin Orders page.</p>
+
+      <form id="orderForm" class="form">
+        <input type="hidden" id="product" name="product">
+        <input type="hidden" id="price" name="price">
+
+        <label for="name">Full Name</label>
+        <input id="name" name="name" required placeholder="Your name">
+
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" required placeholder="03xx-xxxxxxx">
+
+        <label for="city">City</label>
+        <input id="city" name="city" required placeholder="Your city">
+
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="3" required placeholder="Street, area, building, etc."></textarea>
+
+        <label for="note">Order Note (optional)</label>
+        <textarea id="note" name="note" rows="2" placeholder="Any instructions"></textarea>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <button type="submit">Place Order</button>
+          <a class="btn soft" href="product.html">Back to Products</a>
+        </div>
+      </form>
+      <p class="small">Demo only (front-end). Data is stored in your browser’s localStorage.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container foot">
+    <div><strong>Ayesha-care</strong><p class="small"><br/></p></div>
+    <div><strong>Quick Links</strong><br/><a href="index.html">Home</a> · <a href="products.html">Products</a> · <a href="orders.html">Orders</a></div>
+    <div><strong>Legal</strong><br/><a href="#">Privacy</a> · <a href="#">Refunds</a> · <a href="#">Shipping</a> · <a href="#">Terms</a></div>
+  </div>
+  <div class="container legal">© 2025 Ayesha-care. All rights reserved.</div>
+</footer>
+
+<script>
+  // Simulate a short handoff animation on page load
+  window.addEventListener('load', () => {
+    setTimeout(()=> document.getElementById('loader').classList.remove('active'), 700);
+  });
+
+  // Read query params
+  (function initFromQuery(){
+    const params = new URLSearchParams(location.search);
+    const product = params.get('product') || 'Custom Product';
+    const price = params.get('price') || '0';
+    const img = params.get('img') || 'serum background oranges.jpg';
+    document.getElementById('pname').textContent = product;
+    document.getElementById('pprice').textContent = price;
+    document.getElementById('pimg').src = img;
+    document.getElementById('product').value = product;
+    document.getElementById('price').value = price;
+  })();
+
+  // Save order to localStorage
+  function saveOrder(order){
+    const key = 'abc_orders';
+    const list = JSON.parse(localStorage.getItem(key) || '[]');
+    list.push(order);
+    localStorage.setItem(key, JSON.stringify(list));
+  }
+
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const img = new URLSearchParams(location.search).get('img') || 'serum background oranges.jpg';
+    const order = {
+      id: 'ORD-' + Date.now(),
+      product: document.getElementById('product').value,
+      price: document.getElementById('price').value,
+      img: img,
+      name: document.getElementById('name').value,
+      phone: document.getElementById('phone').value,
+      city: document.getElementById('city').value,
+      address: document.getElementById('address').value,
+      note: document.getElementById('note').value,
+      createdAt: new Date().toISOString()
+    };
+    // Show loader while "saving"
+    document.getElementById('loader').classList.add('active');
+    setTimeout(()=> {
+      saveOrder(order);
+      alert('✅ Order placed successfully! Order ID: ' + order.id);
+      window.location.href = 'index.html';
+    }, 700);
+  });
+</script>
+</body>
+</html>
