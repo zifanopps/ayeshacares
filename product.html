@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Products — Ayesha-care</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <script>
+    function orderNow(product, price, img){
+      const href = 'delivery.html?product=' + encodeURIComponent(product) + '&price=' + encodeURIComponent(price) + (img ? '&img=' + encodeURIComponent(img) : '');
+      window.location.href = href;
+    }
+  </script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand"><a href="index.html">Ayesha-care</a></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="active" href="product.html">Products</a>
+      <a href="orders.html">Orders (Admin)</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container pad">
+  <h1>Shop All Products</h1>
+
+  <h3 id="face">Face Care</h3>
+  <div class="grid" style="margin:10px 0 26px;">
+    <div class="card">
+      <img src="serum background oranges.jpg" alt="">
+      <h3>Vitamin C Face Serum 30ml</h3>
+      <p class="price">PKR 1200</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Vitamin C Face Serum 30ml','1200','serum background oranges.jpg')">Order Now</a>
+    </div>
+    <div class="card">
+      <img src="ikl - Copy.png" alt="ikl - Copy.png">
+      <h3>Hydrating Gel Cream 50ml</h3>
+      <p class="price">PKR 1150</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Hydrating Gel Cream 50ml','1150','ikl - Copy.png')">Order Now</a>
+    </div>
+  </div>
+
+  <h3 id="body">Body Care</h3>
+  <div class="grid" style="margin:10px 0 26px;">
+    <div class="card">
+      <img src="cream.png" alt="">
+      <h3>Body Lightening Cream 500ml</h3>
+      <p class="price">PKR 1150</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Body Lightening Cream 500ml','1150','cream.png')">Order Now</a>
+    </div>
+    <div class="card">
+      <img src="Hand and feet.png" alt="">
+      <h3>Hand & Feet Cream 100ml</h3>
+      <p class="price">PKR 1150</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Hand & Feet Cream 100ml','1799','Hand and feet.png')">Order Now</a>
+    </div>
+  </div>
+
+  <h3 id="serums">Serums & Treatments</h3>
+  <div class="grid">
+    <div class="card">
+      <img src="ikl - Copy.png" alt="">
+      <h3>Night Repair Treatment 30ml</h3>
+      <p class="price">PKR 1150</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Night Repair Treatment 30ml','1150','ikl - Copy.png')">Order Now</a>
+    </div>
+    <div class="card">
+      <img src="dark spots.png" alt="">
+      <h3>pinkish 15ml</h3>
+      <p class="price">PKR 1150</p>
+      <a class="btn" href="javascript:void(0)" onclick="orderNow('Dark Spot Corrector 15ml','1150','dark spots.png')">Order Now</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container foot">
+    <div><strong>Ayesha-care</strong><p class="small"> — 03234864428<br/>Ayeshacare1@gmail.com</p></div>
+    <div><strong>Quick Links</strong><br/><a href="index.html">Home</a><br/><a href="orders.html">Orders (Admin)</a></div>
+    <div><strong>Legal</strong><br/><a href="#">Privacy</a> · <a href="#">Refunds</a> · <a href="#">Shipping</a> · <a href="#">Terms</a></div>
+  </div>
+  <div class="container legal">© 2025 Ayesha-care. All rights reserved.</div>
+</footer>
+</body>
+</html>
