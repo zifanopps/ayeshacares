@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orders (Admin) — Ayesha-care</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand"><a href="index.html">Ayesha-care</a></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="product.html">Products</a>
+      <a class="active" href="orders.html">Orders (Admin)</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container pad">
+  <h1>Orders (Admin)</h1>
+
+  <!-- Password gate -->
+  <div id="pwGate" class="form pw-card">
+    <label for="pw">Enter Password</label>
+    <input id="pw" type="password" placeholder="••••••••••••" />
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button id="pwBtn">Unlock</button>
+      <a class="btn soft" href="index.html">Back</a>
+    </div>
+    <p class="small">Protected (front-end only). Password is case-sensitive.</p>
+  </div>
+
+  <!-- Orders content -->
+  <div id="ordersWrap" style="display:none">
+    <div class="tools">
+      <button id="exportBtn">Export JSON</button>
+      <button id="csvBtn">Download CSV</button>
+      <button id="clearBtn" style="background:#ef4444">Clear All</button>
+    </div>
+    <div style="overflow:auto">
+      <table class="table" id="ordersTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Order ID</th><th>Product</th><th>Image</th><th>Price (PKR)</th>
+            <th>Name</th><th>Phone</th><th>City</th><th>Address</th>
+            <th>Note</th><th>Created</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody><!-- rows --></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container foot">
+    <div><strong>Ayesha-care</strong><p class="small"> — 03234864428<br/>Ayeshacare1@gmail.com</p></div>
+    <div><strong>Quick Links</strong><br/><a href="index.html">Home</a> · <a href="product.html">Products</a></div>
+    <div><strong>Legal</strong><br/><a href="#">Privacy</a> · <a href="#">Refunds</a> · <a href="#">Shipping</a> · <a href="#">Terms</a></div>
+  </div>
+  <div class="container legal">© 2025 Ayesha-care. All rights reserved.</div>
+</footer>
+
+<script>
+  const PASSWORD = 'awaisimran9900';
+  const KEY = 'abc_orders';
+
+  function getOrders(){
+    return JSON.parse(localStorage.getItem(KEY) || '[]');
+  }
+  function setOrders(list){
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }
+
+  function renderTable(){
+    const tbody = document.querySelector('#ordersTable tbody');
+    const orders = getOrders();
+    tbody.innerHTML = '';
+    orders.forEach((o, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${o.id}</td>
+        <td>${escapeHtml(o.product)}</td>
+        <td><img src="${escapeHtml(o.img || 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=1200&auto=format&fit=crop')}" alt="${escapeHtml(o.product)}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;"></td>
+        <td>${escapeHtml(o.price)}</td>
+        <td>${escapeHtml(o.name)}</td>
+        <td>${escapeHtml(o.phone)}</td>
+        <td>${escapeHtml(o.city)}</td>
+        <td>${escapeHtml(o.address)}</td>
+        <td>${escapeHtml(o.note || '')}</td>
+        <td>${new Date(o.createdAt).toLocaleString()}</td>
+        <td><button data-id="${o.id}" class="btn soft" style="padding:6px 10px">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Delete handlers
+    tbody.querySelectorAll('button[data-id]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-id');
+        const list = getOrders().filter(x=>x.id !== id);
+        setOrders(list);
+        renderTable();
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"'`=\/]/g, function (c) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[c]);
+    });
+  }
+
+  // Password gate
+  document.getElementById('pwBtn').addEventListener('click', ()=>{
+    const v = document.getElementById('pw').value;
+    if(v === PASSWORD){
+      document.getElementById('pwGate').style.display = 'none';
+      document.getElementById('ordersWrap').style.display = 'block';
+      renderTable();
+    }else{
+      alert('❌ Wrong password');
+    }
+  });
+
+  // Export JSON
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(getOrders(), null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'orders.json';
+    a.click();
+  });
+
+  // Export CSV
+  document.getElementById('csvBtn').addEventListener('click', ()=>{
+    const rows = getOrders();
+    const header = ['id','product','price','name','phone','city','address','note','createdAt'];
+    const csv = [header.join(',')].concat(
+      rows.map(o => header.map(h => `"${String(o[h]??'').replace(/"/g,'""')}"`).join(','))
+    ).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'orders.csv';
+    a.click();
+  });
+
+  // Clear all
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    if(confirm('Delete ALL orders?')){
+      localStorage.removeItem(KEY);
+      renderTable();
+    }
+  });
+</script>
+</body>
+</html>
